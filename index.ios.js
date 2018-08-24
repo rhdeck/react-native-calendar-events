@@ -1,41 +1,32 @@
-'use strict';
-
-import { NativeModules } from 'react-native';
-
-const RNCalendarEvents = NativeModules.RNCalendarEvents
-
+"use strict";
+import {
+  authorizationStatus,
+  authorizeEventStore,
+  findCalendars,
+  fetchAllEvents as swiftFetchAllEvents,
+  findEventById,
+  saveEvent as swiftSaveEvent,
+  removeEvent as swiftRemoveEvent
+} from "./RNSwiftBridge";
+const fetchAllEvents = async (startDate, endDate, calendars = []) => {
+  return await swiftFetchAllEvents(startDate, endDate, calendars);
+};
+const saveEvent = async (title, details, options = {}) => {
+  return await swiftSaveEvent(title, details, options);
+};
+const removeEvent = async (id, options = { futureEvents: false }) => {
+  return await swiftRemoveEvent(id, options);
+};
+const removeFutureEvents = async (id, options = { futureEvents: true }) => {
+  return await swiftRemoveEvent(id, options);
+};
 export default {
-
-  authorizationStatus () {
-    return RNCalendarEvents.authorizationStatus()
-  },
-
-  authorizeEventStore () {
-    return RNCalendarEvents.authorizeEventStore()
-  },
-
-  fetchAllEvents (startDate, endDate, calendars = []) {
-    return RNCalendarEvents.fetchAllEvents(startDate, endDate, calendars)
-  },
-
-  findCalendars () {
-    return RNCalendarEvents.findCalendars();
-  },
-
-  findEventById (id) {
-    return RNCalendarEvents.findEventById(id);
-  },
-
-  saveEvent (title, details, options = {}) {
-    return RNCalendarEvents.saveEvent(title, details, options)
-  },
-
-  removeEvent (id, options = {futureEvents: false}) {
-    return RNCalendarEvents.removeEvent(id, options)
-  },
-
-  removeFutureEvents (id, options = {futureEvents: true}) {
-    return RNCalendarEvents.removeEvent(id, options)
-  }
-
-}
+  authorizationStatus,
+  authorizeEventStore,
+  findCalendars,
+  fetchAllEvents,
+  findEventById,
+  saveEvent,
+  removeEvent,
+  removeFutureEvents
+};
