@@ -5,8 +5,9 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
+		282EF4DECA9740898098AD04 /* rn-swift-bridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 2103160CE73B4964983D3D6D /* rn-swift-bridge.m */; };
+		71A920C9212F4AA100984D02 /* RNCalendarEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71A920C8212F4AA100984D02 /* RNCalendarEvents.swift */; };
 		BEC43C6E1C723089001221C6 /* RNCalendarEvents.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = BEC43C6D1C723089001221C6 /* RNCalendarEvents.h */; };
 		BEC43C701C723089001221C6 /* RNCalendarEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = BEC43C6F1C723089001221C6 /* RNCalendarEvents.m */; };
 /* End PBXBuildFile section */
@@ -25,6 +26,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2103160CE73B4964983D3D6D /* rn-swift-bridge.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = "rn-swift-bridge.m"; sourceTree = "<group>"; };
+		71A920C7212F4AA100984D02 /* RNCalendarEvents-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNCalendarEvents-Bridging-Header.h"; sourceTree = "<group>"; };
+		71A920C8212F4AA100984D02 /* RNCalendarEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNCalendarEvents.swift; sourceTree = "<group>"; };
 		BEC43C6A1C723089001221C6 /* libRNCalendarEvents.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNCalendarEvents.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEC43C6D1C723089001221C6 /* RNCalendarEvents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNCalendarEvents.h; sourceTree = "<group>"; };
 		BEC43C6F1C723089001221C6 /* RNCalendarEvents.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNCalendarEvents.m; sourceTree = "<group>"; };
@@ -41,11 +45,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		71A920DA212F530000984D02 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				2103160CE73B4964983D3D6D /* rn-swift-bridge.m */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		BEC43C611C723089001221C6 = {
 			isa = PBXGroup;
 			children = (
 				BEC43C6C1C723089001221C6 /* RNCalendarEvents */,
 				BEC43C6B1C723089001221C6 /* Products */,
+				71A920DA212F530000984D02 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -62,6 +75,8 @@
 			children = (
 				BEC43C6D1C723089001221C6 /* RNCalendarEvents.h */,
 				BEC43C6F1C723089001221C6 /* RNCalendarEvents.m */,
+				71A920C8212F4AA100984D02 /* RNCalendarEvents.swift */,
+				71A920C7212F4AA100984D02 /* RNCalendarEvents-Bridging-Header.h */,
 			);
 			name = RNCalendarEvents;
 			sourceTree = "<group>";
@@ -92,12 +107,13 @@
 		BEC43C621C723089001221C6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 720;
 				ORGANIZATIONNAME = "William Mc";
 				TargetAttributes = {
 					BEC43C691C723089001221C6 = {
 						CreatedOnToolsVersion = 7.2.1;
 						DevelopmentTeam = 39P9FCH768;
+						LastSwiftMigration = 940;
 					};
 				};
 			};
@@ -123,7 +139,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71A920C9212F4AA100984D02 /* RNCalendarEvents.swift in Sources */,
 				BEC43C701C723089001221C6 /* RNCalendarEvents.m in Sources */,
+				282EF4DECA9740898098AD04 /* rn-swift-bridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,26 +231,35 @@
 		BEC43C741C723089001221C6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../node_modules/react-native/React/**",
 					"$(SRCROOT)/node_modules/react-native/React/**",
 				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "./RNCalendarEvents-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		BEC43C751C723089001221C6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../node_modules/react-native/React/**",
 					"$(SRCROOT)/node_modules/react-native/React/**",
 				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "./RNCalendarEvents-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
