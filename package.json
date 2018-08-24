@@ -25,6 +25,10 @@
     "calendar-events"
   ],
   "peerDependencies": {
-    "react-native": ">=0.40.0"
+    "react-native": ">=0.40.0",
+    "react-native-swift": "^1.2.1"
+  },
+  "devDependencies": {
+    "react-native-swift-bridge": "^2.4.2"
   }
 }
