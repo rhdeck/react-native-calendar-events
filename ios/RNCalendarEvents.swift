@@ -225,7 +225,14 @@ func toDic(calendar: EKCalendar) -> [String: Any] {
         "title": calendar.title,
         "allowsModifications": calendar.allowsContentModifications,
         "source": calendar.source.title,
-        //"allowedAvailabilities":
+        "allowedAvailabilities": { () -> [String] in
+            var out:[String] = []
+            if calendar.supportedEventAvailabilities.contains(.busy) { out.append("busy") }
+            if calendar.supportedEventAvailabilities.contains(.free) { out.append("free") }
+            if calendar.supportedEventAvailabilities.contains(.tentative) { out.append("tentative") }
+            if calendar.supportedEventAvailabilities.contains(.unavailable) { out.append("unavailable") }
+            return out
+        }(),
         "color": calendar.cgColor.components?.flatMap() { i in
             return String(format: "%02lX", Int(i * 255.0))
             }.joined() ?? "000"
