@@ -26,6 +26,7 @@
   ],
   "peerDependencies": {
     "react-native": ">=0.40.0",
+    "react-native-calendar-ios-enable": "^1.0.0",
     "react-native-swift": "^1.2.1"
   },
   "devDependencies": {
