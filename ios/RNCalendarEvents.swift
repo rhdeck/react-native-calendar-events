@@ -25,7 +25,7 @@ class RNCalendarEvents: NSObject {
     }
     @objc func findCalendars(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         guard EKEventStore.authorizationStatus(for: .event) == .authorized else { reject("unauthorized", "Not authorized to use calendar", nil); return }
-        let out = eventStore.calendars(for: .event).flatMap() { calendar in
+        let out = eventStore.calendars(for: .event).map() { calendar in
             return toDic(calendar: calendar)
         }
         resolve(out)
@@ -37,7 +37,7 @@ class RNCalendarEvents: NSObject {
         });
         DispatchQueue(label:"RNCalendarEvents").async() {
             let events = self.eventStore.events(matching: predicate).sorted() { $0.compareStartDate(with: $1) == .orderedAscending }
-            resolve(events.flatMap({ toDic(event: $0)}))
+            resolve(events.map({ toDic(event: $0)}))
         }
     }
     @objc func findEventById(_ eventId:String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
@@ -64,15 +64,15 @@ class RNCalendarEvents: NSObject {
         }
         e.title = title
         if let s = settings["location"] as? String { e.location = s }
-        if let d = options["exceptionDate"] as? Date { e.startDate = d }
-        else if let d = settings["startDate"] as? Date { e.startDate = d }
-        if let d = settings["endDate"] as? Date { e.endDate = d }
+        if let d = options["exceptionDate"] { e.startDate = RCTConvert.nsDate(d) }
+        else if let d = settings["startDate"] { e.startDate = RCTConvert.nsDate(d) }
+        if let d = settings["endDate"]  { e.endDate = RCTConvert.nsDate(d) }
         if let b = settings["allDay"] as? Bool { e.isAllDay = b }
         if let s = settings["notes"] as? String { e.notes = s }
         if let s = settings["url"] as? String { e.url = URL(string: s)}
         if let a = settings["alarms"] as? [[String:Any]] { e.alarms = a.map{
             var alarm: EKAlarm
-            if let d = $0["date"] as? Date { alarm = EKAlarm(absoluteDate: d) }
+            if let d = $0["date"]  { alarm = EKAlarm(absoluteDate: RCTConvert.nsDate(d)) }
             else if let i = $0["date"] as? Double { alarm = EKAlarm(relativeOffset: i)}
             else { alarm = EKAlarm() }
             if let d = $0["structuredLocation"] as? [String:Any] , let s = d["title"] as? String {
@@ -116,18 +116,18 @@ class RNCalendarEvents: NSObject {
         do {
             try eventStore.save(e, span: options["exceptionDate"] == nil ? EKSpan.futureEvents : EKSpan.thisEvent)
         } catch {
-            reject("save_error", "Could not save", nil)
+            reject("save_error", "Could not save: " + error.localizedDescription, nil)
             return
         }
-        resolve(["success": e.calendarItemIdentifier])
+        resolve(["success": e.eventIdentifier])
     }
     @objc func removeEvent(_ eventId: String, options: [String: Any], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         guard EKEventStore.authorizationStatus(for: .event) == .authorized else { reject("unauthorized", "Not authorized to use calendar", nil); return }
         let futureEvents:Bool = options["futureEvents"] as? Bool ?? false
-        if let exceptionDate = options["exceptionDate"] as? Date {
-            let p = eventStore.predicateForEvents(withStart: exceptionDate, end: Date.distantFuture, calendars: nil)
+        if let exceptionDate = options["exceptionDate"]  {
+            let p = eventStore.predicateForEvents(withStart: RCTConvert.nsDate(exceptionDate), end: Date.distantFuture, calendars: nil)
             DispatchQueue(label: "RNCalendarEvents").async() {
-                if let e = self.eventStore.events(matching: p).first(where: { $0.calendarItemIdentifier == eventId && $0.startDate == exceptionDate }) {
+                if let e = self.eventStore.events(matching: p).first(where: { $0.eventIdentifier == eventId && $0.startDate == RCTConvert.nsDate(exceptionDate) }) {
                     do {
                         try self.eventStore.remove(e, span: futureEvents ? EKSpan.futureEvents : EKSpan.thisEvent)
                     } catch {
@@ -148,16 +148,20 @@ class RNCalendarEvents: NSObject {
             }
         }
     }
+    static func requiresMainQueueSetup() -> Bool {
+        return false
+    }
 }
 //#MARK:Private functions
 func toDic(event:EKEvent) -> [String: Any] {
     var out:[String: Any] = [:]
-    out["id"] = event.calendarItemIdentifier
+    out["id"] = event.eventIdentifier
+    out["calendarItemId"] = event.calendarItemIdentifier
     out["calendar"] = toDic(calendar: event.calendar)
     out["title"] = event.title
-    out["startDate"] = event.startDate
-    out["endDate"] = event.endDate
-    out["occurrenceDate"] = event.occurrenceDate
+    out["startDate"] = event.startDate.timeIntervalSince1970 * 1000.0
+    out["endDate"] = event.endDate.timeIntervalSince1970 * 1000.0
+    out["occurrenceDate"] = event.occurrenceDate.timeIntervalSince1970 * 1000.0
     out["isDetached"] = event.isDetached
     out["allDay"] = event.isAllDay
     out["availability"] = { a in
@@ -223,7 +227,7 @@ func toDic(calendar: EKCalendar) -> [String: Any] {
         "source": calendar.source.title,
         //"allowedAvailabilities":
         "color": calendar.cgColor.components?.flatMap() { i in
-            return String(format: "%02lX", i * 255.0)
+            return String(format: "%02lX", Int(i * 255.0))
             }.joined() ?? "000"
     ];
 }
