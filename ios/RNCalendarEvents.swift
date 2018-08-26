@@ -53,7 +53,7 @@ class RNCalendarEvents: NSObject {
     @objc func saveEvent(_ title: String, settings: [String: Any], options: [String: Any], resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         guard EKEventStore.authorizationStatus(for: .event) == .authorized else { reject("unauthorized", "Not authorized to use calendar", nil); return }
         var e:EKEvent
-        if let s = settings["calendarId"] as? String {
+        if let s = settings["id"] as? String {
             guard let event = eventStore.event(withIdentifier: s) else {reject("no_event", "Did not find event " + s, nil); return }
             e = event
         } else {
@@ -184,7 +184,7 @@ func toDic(event:EKEvent) -> [String: Any] {
                 adic["date"] = Date(timeInterval: alarm.relativeOffset, since: event.startDate)
             }
             if let l = alarm.structuredLocation {
-                adic["strucutedLocation"] = [
+                adic["structuredLocation"] = [
                     "title": l.title,
                     "radius":  l.radius,
                     "coords": ["latitude": l.geoLocation?.coordinate.latitude, "longitude": l.geoLocation?.coordinate.longitude],
